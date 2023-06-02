@@ -6,6 +6,15 @@
         path: "{{ ansible_user_dir }}"
         mode: "og-rwx"
 
+    - name: Configure bash
+      ansible.builtin.copy:
+        dest: ~/.bash_aliases
+        content: |
+          alias ll="ls -l"
+          alias rm="rm -i"
+          alias cp="cp -i"
+          alias mv="mv -i"
+
     - name: Enable predictable network interface names
       ansible.builtin.file:
         path: "/etc/systemd/network/{{ item }}"
