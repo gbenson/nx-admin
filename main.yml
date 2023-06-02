@@ -1,2 +1,21 @@
 ---
 - hosts: slice
+  tasks:
+    - name: Enable predictable network interface names
+      ansible.builtin.file:
+        path: "/etc/systemd/network/{{ item }}"
+        # For eth[012] create symlinks to /dev/null to
+        # mask the files in /usr/lib/systemd/network.
+        # This is the Raspbian GNU/Linux 11 (bullseye)
+        # default:
+        #   state: link
+        #   src: /dev/null
+        #
+        # For enx[0-9a-f]{12}, delete the symlinks to
+        # unmask the rules in /usr/lib/systemd/network:
+        #   state: absent
+        state: absent
+      loop:
+        - 99-default.link
+        - 73-usb-net-by-mac.link
+      become: yes
