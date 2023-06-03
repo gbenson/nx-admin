@@ -61,10 +61,11 @@
         - 73-usb-net-by-mac.link
       become: yes
 
-    - name: Install Redis
+    - name: Install packages
       ansible.builtin.apt:
         pkg:
           - redis-server
+          - tcpdump
       become: yes
       tags:
         - redis
