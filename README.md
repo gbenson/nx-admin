@@ -17,7 +17,11 @@ Upgrade pip, and install Ansible:
 ```sh
 pip install --upgrade pip ansible
 ```
-Run the playbook:
+Run the entire playbook:
 ```sh
 ansible-playbook main.yml
+```
+Run only tasks tagged with "redis":
+```sh
+ansible-playbook -t redis main.yml
 ```

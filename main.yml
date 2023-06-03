@@ -60,3 +60,36 @@
         - 99-default.link
         - 73-usb-net-by-mac.link
       become: yes
+
+    - name: Install Redis
+      ansible.builtin.apt:
+        pkg:
+          - redis-server
+      become: yes
+      tags:
+        - redis
+
+    - name: Configure Redis
+      ansible.builtin.lineinfile:
+        path: /etc/redis/redis.conf
+        regexp: ^#?\s*({{ item.keyword }})(\s+{{ item.args }})?
+        line: \g<1> {{ item.args }}
+        backrefs: yes
+      loop:
+        - { keyword: bind,           args: 127.0.0.1 }
+        - { keyword: protected-mode, args: "yes" }
+        - { keyword: aclfile,        args: /etc/redis/users.acl }
+        - { keyword: maxclients,     args: 100 }
+      become: yes
+      tags:
+        - redis
+
+    - name: Enable and start Redis
+      ansible.builtin.systemd:
+        name: redis
+        enabled: true
+        masked: no
+        state: started
+      become: yes
+      tags:
+        - redis
