@@ -6,6 +6,33 @@
         path: "{{ ansible_user_dir }}"
         mode: "og-rwx"
 
+    - name: Remove me from unnecessary groups
+      ansible.builtin.command:
+        argv:
+          - /usr/bin/gpasswd
+          - --delete
+          - "{{ ansible_user_id }}"
+          - "{{ item }}"
+      register: command_result
+      changed_when: "not 'is not a member of' in command_result.stderr"
+      failed_when: false
+      loop:
+        - adm
+        - audio
+        - cdrom
+        - dialout
+        - games
+        - gpio
+        - i2c
+        - input
+        - netdev
+        - plugdev
+        - render
+        - spi
+        - users
+        - video
+      become: yes
+
     - name: Configure bash
       ansible.builtin.copy:
         dest: ~/.bash_aliases
