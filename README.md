@@ -1,12 +1,12 @@
-# Slice
-Ansible playbook for slice sysadmin.  I'm not sure where I'm going
+# Network X
+Ansible playbook for Network X sysadmin.  I'm not sure where I'm going
 with this.
 
 ## Local setup
 Clone the repo:
 ```sh
-git clone git@github.com:gbenson/slice.git
-cd slice
+git clone https://github.com/gbenson/nx-admin.git
+cd nx-admin
 ```
 Create a virtual environment:
 ```sh
