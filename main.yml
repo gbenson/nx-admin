@@ -1,5 +1,22 @@
 ---
 - hosts: slice
+  vars:
+    wifi_ssid: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      653737326532336339313339613964313332343935616232333963323034633635
+      366139653432616436313863613536323534616663313466346564323263640a65
+      326433356130613461613339613061326165373266643231326363353534363335
+      3430653962386430343739313131323135623565373033313133303363370a6236
+      346637313461303261613666393031336533306537313634383635373032336535
+      3866356134656361626639663931366338633966356638333930633634
+    wifi_psk: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      636465303230306464376334313237366637333938633738653665363763653364
+      366334633435613738613637323865393836643432633766303464366263630a38
+      326135366236656663393839373235376633653239656464316262663566363436
+      3465623932376232356331613163393063313566663131663230643435300a6134
+      336566386566313163313865343061633838326630643430656334623763
+
   tasks:
     - name: Lock down home directory
       ansible.builtin.file:
@@ -60,6 +77,40 @@
         - 99-default.link
         - 73-usb-net-by-mac.link
       become: yes
+      tags:
+        - network
+
+    - name: Configure Wi-Fi
+      ansible.builtin.copy:
+        dest: /etc/wpa_supplicant/wpa_supplicant.conf
+        owner: root
+        group: root
+        mode: "0600"
+        content: |
+          ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+          update_config=1
+          country=GB
+
+          network={
+              ssid="{{ wifi_ssid }}"
+              psk="{{ wifi_psk }}"
+
+              # List of acceptable protocols
+              # RSN is WPA2
+              proto=RSN
+              # List of acceptable key management protocols
+              key_mgmt=WPA-PSK
+              # List of allowed IEEE 802.11 authentication algorithms
+              auth_alg=OPEN
+              # List of acceptable pairwise (unicast) ciphers for WPA
+              # CCMP is AES (in Counter mode with CBC-MAC)
+              pairwise=CCMP
+              # List of acceptable group (multicast) ciphers for WPA
+              group=CCMP
+          }
+      become: yes
+      tags:
+        - network
 
     - name: Install packages
       ansible.builtin.apt:
