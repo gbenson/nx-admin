@@ -133,7 +133,6 @@
       loop:
         - { keyword: bind,           args: 127.0.0.1 }
         - { keyword: protected-mode, args: "yes" }
-        - { keyword: aclfile,        args: /etc/redis/users.acl }
         - { keyword: maxclients,     args: 100 }
       become: yes
       tags:
