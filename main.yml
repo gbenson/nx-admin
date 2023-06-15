@@ -18,6 +18,11 @@
       336566386566313163313865343061633838326630643430656334623763
 
   tasks:
+    - debug:
+        var: ansible_facts
+      tags:
+        - debug
+
     - name: Lock down home directory
       ansible.builtin.file:
         path: "{{ ansible_user_dir }}"
@@ -147,3 +152,54 @@
       become: yes
       tags:
         - redis
+
+    - name: Main deployment directories exist
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+      loop:
+        - /opt/nx
+        - /var/lib/nx
+      become: yes
+      tags:
+        - deploy
+
+    - name: Deployment user exists
+      ansible.builtin.user:
+        name: nx-deploy
+        password: "*"
+        home: /var/lib/nx/deploy
+        umask: "0077"
+      become: yes
+      tags:
+        - deploy
+
+    - name: Other deployment directories exist
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        owner: nx-deploy
+        group: nx-deploy
+        mode: "{{ item.mode }}"
+      loop:
+        - { path: ~nx-deploy,         mode: "0700" }
+        - { path: ~nx-deploy/.ssh,    mode: "0700" }
+        - { path: /var/lib/nx/wheels, mode: "0755" }
+        - { path: /opt/nx/workers,    mode: "0755" }
+      become: yes
+      tags:
+        - deploy
+
+    - name: Deployment user has ~/.ssh/authorized_keys
+      ansible.builtin.copy:
+        src: ~/.ssh/authorized_keys
+        dest: ~nx-deploy/.ssh/authorized_keys
+        owner: nx-deploy
+        group: nx-deploy
+        mode: "0600"
+      become: yes
+      tags:
+        - deploy
