@@ -2,7 +2,7 @@
 Ansible playbook for Network X sysadmin.  I'm not sure where I'm going
 with this.
 
-## Local setup
+## Setup
 Clone the repo:
 ```sh
 git clone https://github.com/gbenson/nx-admin.git
@@ -17,6 +17,8 @@ Upgrade pip, and install Ansible:
 ```sh
 pip install --upgrade pip ansible
 ```
+
+## Usage
 Run the entire playbook:
 ```sh
 ansible-playbook main.yml
