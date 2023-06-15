@@ -153,7 +153,7 @@
       tags:
         - redis
 
-    - name: Main deployment directories exist
+    - name: Root-owned deployment directories exist
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
@@ -162,6 +162,7 @@
         mode: "0755"
       loop:
         - /opt/nx
+        - /opt/nx/bin
         - /var/lib/nx
       become: yes
       tags:
@@ -177,7 +178,7 @@
       tags:
         - deploy
 
-    - name: Other deployment directories exist
+    - name: Deployment-user-owned directories exist
       ansible.builtin.file:
         path: "{{ item.path }}"
         state: directory
@@ -200,6 +201,32 @@
         owner: nx-deploy
         group: nx-deploy
         mode: "0600"
+      become: yes
+      tags:
+        - deploy
+
+    - name: Sniffers group exists
+      ansible.builtin.group:
+        name: nx-sniffers
+        state: present
+      become: yes
+      tags:
+        - deploy
+
+    - name: Sniffers' enhanced capability Python exists
+      ansible.builtin.script:
+        cmd: >
+          mksnython.sh
+          {{ ansible_facts['python']['executable'] }}
+          /opt/nx/bin
+      args:
+        executable: /bin/bash
+      register: mksnython
+      changed_when:
+        - mksnython.rc == 0
+      failed_when:
+        - mksnython.rc != 0
+        - mksnython.rc != 2
       become: yes
       tags:
         - deploy
