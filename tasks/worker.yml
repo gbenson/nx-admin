@@ -1,5 +1,5 @@
 ---
-- name: "User {{ item }} exists and is in correct groups"
+- name: "User {{ item }} exists and has correct groups"
   ansible.builtin.user:
     name: "{{ item }}"
     password: "*"
