@@ -1,0 +1,15 @@
+---
+- name: "User {{ item }} exists and is in correct groups"
+  ansible.builtin.user:
+    name: "{{ item }}"
+    password: "*"
+    shell: /bin/bash  # XXX /usr/sbin/nologin?
+    umask: "0077"
+    groups: nx-sniffers
+  become: yes
+
+- name: "~{{ item }} has correct permissions"
+  ansible.builtin.file:
+    path: "~{{ item }}"
+    mode: "og-rwx"
+  become: yes

@@ -229,4 +229,16 @@
         - mksnython.rc != 2
       become: yes
       tags:
-        - deploy
+        - workers
+
+    - name: Create workers
+      ansible.builtin.include_tasks:
+        file: tasks/worker.yml
+        apply:
+          tags:
+            - always
+      loop:
+        - carla
+        - daniel
+      tags:
+        - workers
