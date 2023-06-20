@@ -3,7 +3,7 @@
   ansible.builtin.user:
     name: "{{ item }}"
     password: "*"
-    shell: /bin/bash  # XXX /usr/sbin/nologin?
+    shell: /usr/sbin/nologin
     umask: "0077"
     groups: nx-sniffers
   become: yes
@@ -12,4 +12,44 @@
   ansible.builtin.file:
     path: "~{{ item }}"
     mode: "og-rwx"
+  become: yes
+
+- name: "/etc/systemd/system/{{ item }}.service exists"
+  ansible.builtin.copy:
+    dest: "/etc/systemd/system/{{ item }}.service"
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      [Unit]
+      Description={{ item | title }}
+      Wants=redis.target
+      Documentation=https://github.com/gbenson/nx-workers
+
+      [Service]
+      Type=simple
+      ExecStart=/opt/nx/workers/bin/{{ item }}
+      Restart=always
+      User={{ item }}
+      Group={{ item }}
+
+      UMask=077
+      PrivateTmp=yes
+      ProtectSystem=strict
+      ProtectHome=yes
+      ReadOnlyDirectories=/
+
+      CapabilityBoundingSet=CAP_NET_RAW
+      ProtectControlGroups=true
+
+      [Install]
+      WantedBy=multi-user.target
+  become: yes
+
+- name: "{{ item | title }} is enabled and running"
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: true
+    masked: no
+    state: started
   become: yes
