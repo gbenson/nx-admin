@@ -27,4 +27,5 @@ chown 0.nx-sniffers $tmpfile
 chmod 0750 $tmpfile
 mv $tmpfile $dstfile
 setcap -q $CAP $dstfile
+ln -sf $(basename $dstfile) $(echo $dstfile | sed 's/\.[^.]nx$/nx/')
 echo $dstfile
