@@ -108,10 +108,34 @@
           - redis-server
           - screen
           - tcpdump
+          - unattended-upgrades
       become: yes
       tags:
         - packages
         - redis
+
+    - name: Unattended upgrades are configured
+      ansible.builtin.debconf:
+        name: unattended-upgrades
+        question: unattended-upgrades/enable_auto_updates
+        value: yes
+        vtype: boolean
+      become: yes
+      tags:
+        - packages
+
+    - name: Unattended upgrades are enabled
+      ansible.builtin.lineinfile:
+        path: /etc/apt/apt.conf.d/20auto-upgrades
+        regexp: ^(APT::Periodic::{{ item }})
+        line: \g<1> "1";
+        backrefs: yes
+      loop:
+        - Update-Package-Lists
+        - Unattended-Upgrade
+      become: yes
+      tags:
+        - packages
 
     - name: Redis has correct configuration
       ansible.builtin.lineinfile:
