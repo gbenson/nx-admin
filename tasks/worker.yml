@@ -5,7 +5,14 @@
     password: "*"
     shell: /usr/sbin/nologin
     umask: "0077"
-    groups: nx-sniffers
+    groups: "{{ supplementary_groups.get(item, '') }}"
+  vars:
+    supplementary_groups:
+      carla: nx-sniffers
+      daniel: nx-sniffers
+      ethan: nx-sniffers
+      susan: nx-sniffers
+      steve: nx-sniffers
   become: yes
 
 - name: "~{{ item }} has correct permissions"
