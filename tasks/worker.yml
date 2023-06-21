@@ -54,8 +54,8 @@
 - name: "{{ item | title }} is enabled and running"
   ansible.builtin.systemd:
     name: "{{ item }}"
-    enabled: true
+    enabled: "{{ 'false' if item == 'ethan' else 'true' }}"
     masked: no
-    state: started
+    state: "{{ 'stopped' if item == 'ethan' else 'started' }}"
   become: yes
   when: item != "kaitlin" and item != "susan"
