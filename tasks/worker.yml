@@ -29,6 +29,7 @@
       [Service]
       Type=simple
       ExecStart=/opt/nx/workers/bin/{{ item }}
+      ExecReload=/bin/kill -HUP $MAINPID
       Restart=always
       User={{ item }}
       Group={{ item }}
