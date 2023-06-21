@@ -1,5 +1,5 @@
 ---
-- name: "User {{ item }} exists and has correct groups"
+- name: "{{ item | title }}'s user exists and is in the correct groups"
   ansible.builtin.user:
     name: "{{ item }}"
     password: "*"
@@ -17,7 +17,7 @@
       steve: nx-sniffers
   become: yes
 
-- name: "/etc/systemd/system/{{ item }}.service exists"
+- name: "{{ item | title }}'s systemd service unit is configured"
   ansible.builtin.copy:
     dest: "/etc/systemd/system/{{ item }}.service"
     owner: root

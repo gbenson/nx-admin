@@ -31,7 +31,7 @@
       tags:
         - users
 
-    - name: Remote user has correct groups
+    - name: Remote user is in correct groups
       ansible.builtin.user:
         name: "{{ ansible_user_id }}"
         groups: sudo
@@ -137,7 +137,7 @@
       tags:
         - packages
 
-    - name: Redis has correct configuration
+    - name: Redis is configured
       ansible.builtin.lineinfile:
         path: /etc/redis/redis.conf
         regexp: ^#?\s*({{ item.keyword }})(\s+{{ item.args }})?
@@ -176,7 +176,7 @@
       tags:
         - deploy
 
-    - name: Deployment user exists and has correct groups
+    - name: Deployment user exists and is in correct groups
       ansible.builtin.user:
         name: nx-deploy
         password: "*"
