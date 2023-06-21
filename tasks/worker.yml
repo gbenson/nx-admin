@@ -3,6 +3,8 @@
   ansible.builtin.user:
     name: "{{ item }}"
     password: "*"
+    home: /nonexistent
+    create_home: no
     shell: /usr/sbin/nologin
     umask: "0077"
     groups: "{{ supplementary_groups.get(item, '') }}"
@@ -13,12 +15,6 @@
       ethan: nx-sniffers
       susan: nx-sniffers
       steve: nx-sniffers
-  become: yes
-
-- name: "~{{ item }} has correct permissions"
-  ansible.builtin.file:
-    path: "~{{ item }}"
-    mode: "og-rwx"
   become: yes
 
 - name: "/etc/systemd/system/{{ item }}.service exists"
