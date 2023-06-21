@@ -53,6 +53,7 @@
       [Install]
       WantedBy=multi-user.target
   become: yes
+  when: item != "kaitlin" and item != "susan"
 
 - name: "{{ item | title }} is enabled and running"
   ansible.builtin.systemd:
@@ -61,3 +62,4 @@
     masked: no
     state: started
   become: yes
+  when: item != "kaitlin" and item != "susan"
