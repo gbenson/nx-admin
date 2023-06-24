@@ -118,8 +118,8 @@
         pkg:
           - python3-venv
           - redis-server
-          - screen
           - tcpdump
+          - tmux
           - unattended-upgrades
       become: yes
       tags:
