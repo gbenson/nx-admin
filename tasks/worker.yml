@@ -17,6 +17,12 @@
       steve: nx-sniffers
   become: yes
 
+- name: "{{ item | title }}'s home directory does not exist"
+  ansible.builtin.file:
+    path: "~{{ item }}"
+    state: absent
+  become: yes
+
 - name: "{{ item | title }}'s systemd service unit is configured"
   ansible.builtin.copy:
     dest: "/etc/systemd/system/{{ item }}.service"
