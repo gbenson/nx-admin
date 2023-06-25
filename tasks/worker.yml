@@ -1,26 +1,9 @@
 ---
-- name: "{{ item | title }}'s user exists and is in the correct groups"
+- name: "{{ item | title }}'s user does not exist"
   ansible.builtin.user:
     name: "{{ item }}"
-    password: "*"
-    home: /nonexistent
-    create_home: no
-    shell: /usr/sbin/nologin
-    umask: "0077"
-    groups: "{{ supplementary_groups.get(item, '') }}"
-  vars:
-    supplementary_groups:
-      carla: nx-sniffers
-      daniel: nx-sniffers
-      ethan: nx-sniffers
-      susan: nx-sniffers
-      steve: nx-sniffers
-  become: yes
-
-- name: "{{ item | title }}'s home directory does not exist"
-  ansible.builtin.file:
-    path: "~{{ item }}"
     state: absent
+    remove: yes
   become: yes
 
 - name: "{{ item | title }}'s systemd service unit is configured"
