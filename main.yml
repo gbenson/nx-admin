@@ -115,6 +115,7 @@
     - name: Required packages are installed
       ansible.builtin.apt:
         pkg:
+          - libcap-ng-utils
           - python3-venv
           - redis-server
           - tcpdump
