@@ -40,17 +40,22 @@
       ExecStart=/opt/nx/workers/bin/{{ item }}
       ExecReload=/bin/kill -HUP $MAINPID
       Restart=always
-      User={{ item }}
-      Group={{ item }}
 
-      UMask=077
-      PrivateTmp=yes
+      DynamicUser=yes
+
+      AmbientCapabilities=CAP_NET_RAW    # Grant the capability
+      CapabilityBoundingSet=CAP_NET_RAW  # Don't ever get others
+      NoNewPrivileges=yes
+
       ProtectSystem=strict
       ProtectHome=yes
+      PrivateTmp=yes
+      PrivateDevices=yes
+      ProtectKernelLogs=yes
+      ProtectKernelTunables=yes
+      ProtectControlGroups=yes
       ReadOnlyDirectories=/
-
-      CapabilityBoundingSet=CAP_NET_RAW
-      ProtectControlGroups=true
+      UMask=077
 
       [Install]
       WantedBy=multi-user.target
