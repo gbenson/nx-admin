@@ -228,23 +228,6 @@
       tags:
         - deploy
 
-    - name: Sniffers group does not exist
-      ansible.builtin.group:
-        name: nx-sniffers
-        state: absent
-      become: yes
-      tags:
-        - workers
-        - users
-
-    - name: Enhanced capability packet-sniffing Python does not exist
-      ansible.builtin.file:
-        path: /opt/nx/bin
-        state: absent
-      become: yes
-      tags:
-        - workers
-
     - name: Steve's systemd service unit override directory exists
       ansible.builtin.file:
         path: /etc/systemd/system/steve.service.d
@@ -291,8 +274,6 @@
         - carla
         - daniel
         - ethan
-        - kaitlin
-        - susan
         - steve
       tags:
         - workers
