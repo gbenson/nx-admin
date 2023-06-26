@@ -182,7 +182,6 @@
         mode: "0755"
       loop:
         - /opt/nx
-        - /opt/nx/bin
         - /opt/nx/secrets
         - /var/lib/nx
       become: yes
@@ -229,29 +228,19 @@
       tags:
         - deploy
 
-    - name: Sniffers group exists
+    - name: Sniffers group does not exist
       ansible.builtin.group:
         name: nx-sniffers
-        state: present
+        state: absent
       become: yes
       tags:
         - workers
         - users
 
-    - name: Enhanced capability packet-sniffing Python exists
-      ansible.builtin.script:
-        cmd: >
-          mksnython.sh
-          {{ ansible_facts['python']['executable'] }}
-          /opt/nx/bin
-      args:
-        executable: /bin/bash
-      register: mksnython
-      changed_when:
-        - mksnython.rc == 0
-      failed_when:
-        - mksnython.rc != 0
-        - mksnython.rc != 2
+    - name: Enhanced capability packet-sniffing Python does not exist
+      ansible.builtin.file:
+        path: /opt/nx/bin
+        state: absent
       become: yes
       tags:
         - workers
