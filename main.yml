@@ -198,17 +198,12 @@
       tags:
         - workers
 
-    - name: Create workers
+    - name: Worker services are created and running
       ansible.builtin.include_tasks:
         file: tasks/worker.yml
         apply:
           tags:
             - always
-      loop:
-        - carla
-        - daniel
-        - ethan
-        - steve
+      loop: "{{ workers | list }}"
       tags:
         - workers
-        - users
