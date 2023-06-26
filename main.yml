@@ -2,19 +2,7 @@
 - hosts: slice
   vars_files:
     - vars/network.yml
-
-  vars:
-    steve_hmac_key: !vault |
-      $ANSIBLE_VAULT;1.1;AES256
-      363965343838323337353764303334626333616432326666653463646335633933
-      393962663765636433303365353331663866346564646365303037353237330a33
-      396335333364323430323631623037353562636362333530303463333263313364
-      6663376333356563393030386365363663336563623838313230626132610a3831
-      633365356534636535653166666366613935343565346361393063356637346430
-      326530663764336637343463636362326633393062653238646434656563646364
-      626534616632646631386338366535616136616331313332386265326163643339
-      663539373461356535643235666239353435303634626234646335316639333531
-      3566353233303764313530333931326132666461386631623665
+    - vars/workers.yml
 
   tasks:
     - debug:
@@ -195,39 +183,18 @@
       tags:
         - deploy
 
-    - name: Steve's systemd service unit override directory exists
-      ansible.builtin.file:
-        path: /etc/systemd/system/steve.service.d
-        state: directory
-        owner: root
-        group: root
-        mode: "0755"
-      become: yes
-      tags:
-        - workers
-
-    - name: Steve's HMAC key is installed
-      ansible.builtin.copy:
-        dest: /opt/nx/secrets/steve.hmac.key
-        owner: root
-        group: root
-        mode: "0600"
-        content: |
-          {{ steve_hmac_key }}
-      become: yes
-      tags:
-        - workers
-
-    - name: Steve's HMAC key is configured
-      ansible.builtin.copy:
-        dest: /etc/systemd/system/steve.service.d/hmac.conf
-        owner: root
-        group: root
-        mode: "0644"
-        content: |
-          [Service]
-          LoadCredential=hmac.key:/opt/nx/secrets/steve.hmac.key
-      become: yes
+    - name: Workers' credentials are installed and configured
+      ansible.builtin.include_tasks:
+        file: tasks/inject-credentials.yml
+        apply:
+          tags:
+            - always
+      vars:
+        credentials: "{{ workers[name].credentials }}"
+      loop: "{{ workers | list }}"
+      loop_control:
+        loop_var: name
+      when: "'credentials' in workers[name]"
       tags:
         - workers
 
