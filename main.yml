@@ -57,12 +57,9 @@
         - network
 
     - name: Wi-Fi is configured
-      ansible.builtin.copy:
-        dest: /etc/wpa_supplicant/wpa_supplicant.conf
-        owner: root
-        group: root
-        mode: "0600"
-        content: "{{ wpa_supplicant_conf }}"
+      ansible.builtin.file:
+        path: /etc/wpa_supplicant/wpa_supplicant.conf
+        state: absent
       become: yes
       tags:
         - network
