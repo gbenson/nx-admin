@@ -180,22 +180,7 @@
       tags:
         - deploy
 
-    - name: Workers' credentials are installed and configured
-      ansible.builtin.include_tasks:
-        file: tasks/inject-credentials.yml
-        apply:
-          tags:
-            - always
-      vars:
-        worker: "{{ workers[name] }}"
-      loop: "{{ workers | list }}"
-      loop_control:
-        loop_var: name
-      when: "'credentials' in worker"
-      tags:
-        - workers
-
-    - name: Worker services are created and running
+    - name: Workers are configured and running
       ansible.builtin.include_tasks:
         file: tasks/worker.yml
         apply:

@@ -1,4 +1,45 @@
 ---
+- name: "{{ name | title }}'s service unit override directory exists"
+  ansible.builtin.file:
+    path: "/etc/systemd/system/{{ name }}.service.d"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  when: "'credentials' in worker"
+  become: yes
+
+- name: "{{ name | title }}'s credentials are installed"
+  ansible.builtin.copy:
+    dest: "/opt/nx/secrets/{{ name }}.{{ item | regex_replace('_', '.') }}"
+    owner: root
+    group: root
+    mode: "0600"
+    content: |
+      {{ credentials[item] }}
+  loop: "{{ credentials | list }}"
+  vars:
+    credentials: "{{ worker.credentials | default(None) }}"
+  when: "credentials"
+  become: yes
+
+- name: "{{ name | title }}'s credentials are configured"
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/{{ name }}.service.d/credentials.conf
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      [Service]
+      {% for item in credentials %}
+      {% set item = item.replace("_", ".") %}
+      LoadCredential={{ item }}:/opt/nx/secrets/{{ name }}.{{ item }}
+      {% endfor %}
+  vars:
+    credentials: "{{ worker.credentials | default(None) }}"
+  when: "credentials"
+  become: yes
+
 - name: "{{ name | title }}'s systemd service unit is configured"
   ansible.builtin.copy:
     dest: "/etc/systemd/system/{{ name }}.service"
