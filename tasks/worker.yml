@@ -14,7 +14,9 @@
       [Service]
       Type=simple
       ExecStart=/opt/nx/workers/bin/{{ name }}
+      {% if is_reloadable %}
       ExecReload=/bin/kill -HUP $MAINPID
+      {% endif %}
       Restart=always
 
       DynamicUser=yes
@@ -39,6 +41,7 @@
       WantedBy=multi-user.target
   vars:
     capabilities: "{{ worker.capabilities | default(None) }}"
+    is_reloadable: "{{ worker.reloadable | default(True) }}"
   become: yes
 
 - name: "{{ name | title }} is {{ target_state }}"
