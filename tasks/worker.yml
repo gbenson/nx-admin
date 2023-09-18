@@ -37,10 +37,18 @@
       WantedBy=multi-user.target
   become: yes
 
-- name: "{{ name | title }} is enabled and running"
+- name: "{{ name | title }} is {{ target_state }}"
   ansible.builtin.systemd:
     name: "{{ name }}"
-    enabled: "{{ 'false' if name == 'ethan' else 'true' }}"
+    enabled: "{{ 'true' if is_enabled else 'false' }}"
     masked: no
-    state: "{{ 'stopped' if name == 'ethan' else 'started' }}"
+    state: "{{ 'started' if is_enabled else 'stopped' }}"
+  vars:
+    is_enabled: "{{ worker.enabled | default(True) }}"
+    target_state: |
+      {% if is_enabled %}
+      enabled and running
+      {% else %}
+      disabled and stopped
+      {% endif %}
   become: yes

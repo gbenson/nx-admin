@@ -201,6 +201,8 @@
         apply:
           tags:
             - always
+      vars:
+        worker: "{{ workers[name] }}"
       loop: "{{ workers | list }}"
       loop_control:
         loop_var: name
