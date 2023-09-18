@@ -1,10 +1,11 @@
 ---
 workers:
   carla:
-    stub: yes
+    capabilities: CAP_NET_RAW
   daniel:
-    stub: yes
+    capabilities: CAP_NET_RAW
   ethan:
+    capabilities: CAP_NET_RAW
     enabled: no
   steve:
     credentials:
@@ -21,4 +22,5 @@ workers:
         6335316639333531356635323330376431353033393132613266646138663162
         3665
   susan:
+    capabilities: CAP_NET_RAW
     enabled: no

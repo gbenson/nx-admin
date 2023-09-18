@@ -19,8 +19,10 @@
 
       DynamicUser=yes
 
-      AmbientCapabilities=CAP_NET_RAW    # Grant the capability
-      CapabilityBoundingSet=CAP_NET_RAW  # Don't ever get others
+      {% if capabilities %}
+      AmbientCapabilities={{ capabilities }}    # Grant the capability
+      CapabilityBoundingSet={{ capabilities }}  # Don't ever get others
+      {% endif %}
       NoNewPrivileges=yes
 
       ProtectSystem=strict
@@ -35,6 +37,8 @@
 
       [Install]
       WantedBy=multi-user.target
+  vars:
+    capabilities: "{{ worker.capabilities | default(None) }}"
   become: yes
 
 - name: "{{ name | title }} is {{ target_state }}"
