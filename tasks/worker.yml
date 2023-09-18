@@ -6,7 +6,23 @@
     owner: root
     group: root
     mode: "0755"
-  when: "'credentials' in worker"
+  when: "'credentials' in worker or 'environment' in worker"
+  become: yes
+
+- name: "{{ name | title }}'s environment variables are configured"
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/{{ name }}.service.d/environment.conf
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      [Service]
+      {% for item in envvars %}
+      Environment="{{ item.upper() }}={{ envvars[item] }}"
+      {% endfor %}
+  vars:
+    envvars: "{{ worker.environment | default(None) }}"
+  when: "envvars"
   become: yes
 
 - name: "{{ name | title }}'s credentials are installed"
