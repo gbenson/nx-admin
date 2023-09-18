@@ -202,5 +202,7 @@
           tags:
             - always
       loop: "{{ workers | list }}"
+      loop_control:
+        loop_var: name
       tags:
         - workers

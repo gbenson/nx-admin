@@ -1,19 +1,19 @@
 ---
-- name: "{{ item | title }}'s systemd service unit is configured"
+- name: "{{ name | title }}'s systemd service unit is configured"
   ansible.builtin.copy:
-    dest: "/etc/systemd/system/{{ item }}.service"
+    dest: "/etc/systemd/system/{{ name }}.service"
     owner: root
     group: root
     mode: "0644"
     content: |
       [Unit]
-      Description={{ item | title }}
+      Description={{ name | title }}
       Wants=redis.target
       Documentation=https://github.com/gbenson/nx-workers
 
       [Service]
       Type=simple
-      ExecStart=/opt/nx/workers/bin/{{ item }}
+      ExecStart=/opt/nx/workers/bin/{{ name }}
       ExecReload=/bin/kill -HUP $MAINPID
       Restart=always
 
@@ -37,10 +37,10 @@
       WantedBy=multi-user.target
   become: yes
 
-- name: "{{ item | title }} is enabled and running"
+- name: "{{ name | title }} is enabled and running"
   ansible.builtin.systemd:
-    name: "{{ item }}"
-    enabled: "{{ 'false' if item == 'ethan' else 'true' }}"
+    name: "{{ name }}"
+    enabled: "{{ 'false' if name == 'ethan' else 'true' }}"
     masked: no
-    state: "{{ 'stopped' if item == 'ethan' else 'started' }}"
+    state: "{{ 'stopped' if name == 'ethan' else 'started' }}"
   become: yes
