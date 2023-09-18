@@ -23,7 +23,7 @@ Run the entire playbook:
 ```sh
 ansible-playbook main.yml
 ```
-Run only tasks tagged with "redis":
+Skip gathering facts, and run only tasks tagged with "redis":
 ```sh
-ansible-playbook -t redis main.yml
+ANSIBLE_GATHERING=explicit ansible-playbook -t redis main.yml
 ```
