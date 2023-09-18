@@ -187,11 +187,11 @@
           tags:
             - always
       vars:
-        credentials: "{{ workers[name].credentials }}"
+        worker: "{{ workers[name] }}"
       loop: "{{ workers | list }}"
       loop_control:
         loop_var: name
-      when: "'credentials' in workers[name]"
+      when: "'credentials' in worker"
       tags:
         - workers
 
