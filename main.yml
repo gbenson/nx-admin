@@ -72,11 +72,13 @@
           - redis-server
           - tcpdump
           - tmux
+          - tor
           - unattended-upgrades
       become: yes
       tags:
         - packages
         - redis
+        - tor
 
     - name: Unattended upgrades are configured
       ansible.builtin.debconf:
