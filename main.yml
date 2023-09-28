@@ -127,6 +127,30 @@
       tags:
         - redis
 
+    - name: Tor is configured
+      ansible.builtin.lineinfile:
+        path: /etc/tor/torrc
+        regexp: ^#?\s*({{ item.keyword }})
+        line: \g<1> {{ item.args }}
+        firstmatch: yes
+        backrefs: yes
+      loop:
+        - { keyword: HiddenServiceDir, args: /var/lib/tor/hidden_service/ }
+        - { keyword: HiddenServicePort, args: "80 127.0.0.1:3401" }
+      become: yes
+      tags:
+        - tor
+
+    - name: Tor is enabled and running
+      ansible.builtin.systemd:
+        name: tor@default.service
+        enabled: true
+        masked: no
+        state: started
+      become: yes
+      tags:
+        - tor
+
     - name: Root-owned deployment directories exist
       ansible.builtin.file:
         path: "{{ item }}"
