@@ -77,10 +77,12 @@
       Restart=always
 
       DynamicUser=yes
-
       {% if capabilities %}
+
       AmbientCapabilities={{ capabilities }}    # Grant the capability
       CapabilityBoundingSet={{ capabilities }}  # Don't ever get others
+      {% else %}
+      CapabilityBoundingSet=
       {% endif %}
       NoNewPrivileges=yes
 
