@@ -42,6 +42,7 @@ workers:
     reloadable: no
     environment:
       port: 3401
+    only_localhost: true
   steve:
     credentials:
       hmac_key: !vault |

@@ -96,6 +96,19 @@
       ReadOnlyDirectories=/
       UMask=077
 
+      {% if worker.only_localhost | default(False) %}
+      IPAddressAllow=localhost
+      IPAddressDeny=any
+      RestrictNetworkInterfaces=lo
+      RestrictAddressFamilies=AF_INET
+      {% if worker.environment | default(None) %}
+      {% if worker.environment.port | default(None) %}
+      SocketBindAllow=ipv4:tcp:{{ worker.environment.port }}
+      {% endif %}
+      {% endif %}
+      SocketBindDeny=any
+
+      {% endif %}
       [Install]
       WantedBy=multi-user.target
   vars:
