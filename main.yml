@@ -13,10 +13,24 @@
 
     - name: Remote user's home directory has correct permissions
       ansible.builtin.file:
-        path: "{{ ansible_user_dir }}"
-        mode: "og-rwx"
+        path: "{{ item }}"
+        state: directory
+        mode: "0700"
+      loop:
+        - "{{ ansible_user_dir }}"
+        - "{{ ansible_user_dir }}/.ssh"
       tags:
         - users
+        - ssh
+
+    - name: Remote user has ~/.ssh/authorized_keys
+      ansible.builtin.copy:
+        src: ~/.ssh/authorized_keys
+        dest: "{{ ansible_user_dir }}/.ssh/authorized_keys"
+        mode: "0600"
+      tags:
+        - users
+        - ssh
 
     - name: Remote user is in correct groups
       ansible.builtin.user:
@@ -68,6 +82,7 @@
       ansible.builtin.apt:
         pkg:
           - libcap-ng-utils
+          - openssh-server
           - python3-venv
           - redis-server
           - tcpdump
@@ -78,6 +93,7 @@
       tags:
         - packages
         - redis
+        - ssh
         - tor
 
     - name: Unattended upgrades are configured
@@ -102,6 +118,16 @@
       become: yes
       tags:
         - packages
+
+    - name: sshd is enabled and running
+      ansible.builtin.systemd:
+        name: ssh
+        enabled: true
+        masked: no
+        state: started
+      become: yes
+      tags:
+        - ssh
 
     - name: Redis is configured
       ansible.builtin.lineinfile:
