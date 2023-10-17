@@ -145,7 +145,7 @@
 
     - name: Redis is enabled and running
       ansible.builtin.systemd:
-        name: redis
+        name: redis-server
         enabled: true
         masked: no
         state: started
