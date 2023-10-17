@@ -32,14 +32,6 @@
         - users
         - ssh
 
-    - name: Remote user is in correct groups
-      ansible.builtin.user:
-        name: "{{ ansible_user_id }}"
-        groups: sudo
-      become: yes
-      tags:
-        - users
-
     - name: Remote user has safe bash aliases
       ansible.builtin.copy:
         dest: ~/.bash_aliases
@@ -48,6 +40,8 @@
           alias rm="rm -i"
           alias cp="cp -i"
           alias mv="mv -i"
+      tags:
+        - users
 
     - name: System has predictable network interface names
       ansible.builtin.file:
@@ -95,6 +89,14 @@
         - redis
         - ssh
         - tor
+
+    - name: Remote user is in correct groups
+      ansible.builtin.user:
+        name: "{{ ansible_user_id }}"
+        groups: sudo
+      become: yes
+      tags:
+        - users
 
     - name: Unattended upgrades are configured
       ansible.builtin.debconf:
