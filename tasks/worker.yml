@@ -6,7 +6,9 @@
     owner: root
     group: root
     mode: "0755"
-  when: "'credentials' in worker or 'environment' in worker"
+  vars:
+    is_enabled: "{{ worker.enabled | default(True) }}"
+  when: "is_enabled and 'credentials' in worker or 'environment' in worker"
   become: yes
 
 - name: "{{ name | title }}'s environment variables are configured"
@@ -21,8 +23,9 @@
       Environment="{{ item.upper() }}={{ envvars[item] }}"
       {% endfor %}
   vars:
+    is_enabled: "{{ worker.enabled | default(True) }}"
     envvars: "{{ worker.environment | default(None) }}"
-  when: "envvars"
+  when: "is_enabled and envvars"
   become: yes
 
 - name: "{{ name | title }}'s credentials are installed"
@@ -35,8 +38,9 @@
       {{ credentials[item] }}
   loop: "{{ credentials | list }}"
   vars:
+    is_enabled: "{{ worker.enabled | default(True) }}"
     credentials: "{{ worker.credentials | default(None) }}"
-  when: "credentials"
+  when: "is_enabled and credentials"
   become: yes
 
 - name: "{{ name | title }}'s credentials are configured"
