@@ -42,10 +42,12 @@ workers:
         6566
   lucy:
     reloadable: no
+    enabled: no
     environment:
       port: 3401
     only_localhost: true
   steve:
+    enabled: no
     credentials:
       hmac_key: !vault |
         $ANSIBLE_VAULT;1.1;AES256

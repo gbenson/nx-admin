@@ -169,12 +169,12 @@
       tags:
         - tor
 
-    - name: Tor is enabled and running
+    - name: Tor is disabled and stopped
       ansible.builtin.systemd:
         name: tor@default.service
-        enabled: true
+        enabled: false
         masked: no
-        state: started
+        state: stopped
       become: yes
       tags:
         - tor
