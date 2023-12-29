@@ -2,8 +2,10 @@
 workers:
   carla:
     capabilities: CAP_NET_RAW
+    enabled: no
   daniel:
     capabilities: CAP_NET_RAW
+    enabled: no
   ethan:
     capabilities: CAP_NET_RAW
     enabled: no

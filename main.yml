@@ -145,12 +145,12 @@
       tags:
         - redis
 
-    - name: Redis is enabled and running
+    - name: Redis is disabled and stopped
       ansible.builtin.systemd:
         name: redis-server
-        enabled: true
+        enabled: false
         masked: no
-        state: started
+        state: stopped
       become: yes
       tags:
         - redis
